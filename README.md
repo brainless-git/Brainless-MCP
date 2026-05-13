@@ -1,4 +1,6 @@
-# Brainless MCP
+<p align="center">
+  <img src="assets/logo.svg" alt="Brainless MCP" width="600"/>
+</p>
 
 Full-control MCP server for Unraid — lets Claude (or any MCP client) manage your Unraid server via its GraphQL API.
 
