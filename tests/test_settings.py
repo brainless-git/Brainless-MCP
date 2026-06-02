@@ -36,3 +36,18 @@ def test_ssl_verify_true():
 def test_ssl_verify_ca_bundle():
     s = Settings(unraid_verify_ssl="/etc/ssl/ca.pem")
     assert s.ssl_verify == "/etc/ssl/ca.pem"
+
+
+def test_ssl_certfile_and_keyfile_default_empty():
+    s = Settings()
+    assert s.brainless_mcp_ssl_certfile == ""
+    assert s.brainless_mcp_ssl_keyfile == ""
+
+
+def test_ssl_certfile_and_keyfile_set():
+    s = Settings(
+        brainless_mcp_ssl_certfile="/certs/cert.pem",
+        brainless_mcp_ssl_keyfile="/certs/key.pem",
+    )
+    assert s.brainless_mcp_ssl_certfile == "/certs/cert.pem"
+    assert s.brainless_mcp_ssl_keyfile == "/certs/key.pem"

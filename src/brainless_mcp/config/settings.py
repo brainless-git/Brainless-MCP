@@ -35,6 +35,10 @@ class Settings(BaseSettings):
     brainless_mcp_transport: str = "stdio"
     brainless_mcp_port: int = 8000
 
+    # TLS / HTTPS (HTTP and SSE transports only)
+    brainless_mcp_ssl_certfile: str = ""
+    brainless_mcp_ssl_keyfile: str = ""
+
     # Logging
     brainless_mcp_log_level: str = "INFO"
     brainless_mcp_log_file: str = ""

@@ -8,11 +8,28 @@ from .config import get_settings
 from .server import create_server
 
 
+def _ssl_kwargs(settings) -> dict:  # type: ignore[type-arg]
+    """Build uvicorn SSL kwargs when cert/key paths are configured."""
+    certfile = settings.brainless_mcp_ssl_certfile
+    keyfile = settings.brainless_mcp_ssl_keyfile
+    if not certfile and not keyfile:
+        return {}
+    if not certfile or not keyfile:
+        print(
+            "Error: both BRAINLESS_MCP_SSL_CERTFILE and BRAINLESS_MCP_SSL_KEYFILE "
+            "must be set to enable HTTPS.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    return {"ssl_certfile": certfile, "ssl_keyfile": keyfile}
+
+
 def run() -> None:
     settings = get_settings()
     mcp = create_server()
 
     transport = settings.brainless_mcp_transport.lower()
+    ssl = _ssl_kwargs(settings)
 
     if transport == "stdio":
         mcp.run(transport="stdio")
@@ -21,12 +38,14 @@ def run() -> None:
             transport="streamable-http",
             host="0.0.0.0",
             port=settings.brainless_mcp_port,
+            **ssl,
         )
     elif transport == "sse":
         mcp.run(
             transport="sse",
             host="0.0.0.0",
             port=settings.brainless_mcp_port,
+            **ssl,
         )
     else:
         print(f"Unknown transport: {transport}. Use: stdio | http | sse", file=sys.stderr)

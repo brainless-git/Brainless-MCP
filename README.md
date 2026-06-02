@@ -76,6 +76,8 @@ All options are set via environment variables or a `.env` file (copy `.env.examp
 | `BRAINLESS_MCP_BEARER_TOKEN` | *(empty)* | Token MCP clients must present — leave empty to disable auth |
 | `BRAINLESS_MCP_TRANSPORT` | `stdio` | `stdio` \| `http` \| `sse` |
 | `BRAINLESS_MCP_PORT` | `8000` | HTTP listen port (non-stdio transports only) |
+| `BRAINLESS_MCP_SSL_CERTFILE` | *(empty)* | Path to TLS certificate file — enables HTTPS when set with keyfile |
+| `BRAINLESS_MCP_SSL_KEYFILE` | *(empty)* | Path to TLS private key file — must be set together with certfile |
 | `BRAINLESS_MCP_LOG_LEVEL` | `INFO` | `DEBUG` \| `INFO` \| `WARNING` \| `ERROR` |
 | `BRAINLESS_MCP_LOG_FILE` | *(empty)* | Log file path — logs to stderr if empty |
 | `UNRAID_AUTO_START_SUBSCRIPTIONS` | `false` | Auto-start all 10 live WebSocket subscriptions on startup |
@@ -90,6 +92,42 @@ All options are set via environment variables or a `.env` file (copy `.env.examp
   "mcpServers": {
     "brainless-mcp": {
       "url": "http://localhost:8000/mcp"
+    }
+  }
+}
+```
+
+### Using the Docker image (HTTPS with self-signed cert)
+
+Generate a cert once, then mount it into the container:
+
+```bash
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes \
+  -subj '/CN=brainless-mcp'
+
+docker run -d \
+  --name brainless-mcp \
+  --restart unless-stopped \
+  -p 8443:8443 \
+  -v /path/to/cert.pem:/certs/cert.pem:ro \
+  -v /path/to/key.pem:/certs/key.pem:ro \
+  -e UNRAID_API_URL=https://tower.local \
+  -e UNRAID_API_KEY=your_api_key \
+  -e UNRAID_VERIFY_SSL=false \
+  -e BRAINLESS_MCP_TRANSPORT=http \
+  -e BRAINLESS_MCP_PORT=8443 \
+  -e BRAINLESS_MCP_SSL_CERTFILE=/certs/cert.pem \
+  -e BRAINLESS_MCP_SSL_KEYFILE=/certs/key.pem \
+  brainless86/brainless-mcp:latest
+```
+
+Then point Claude Desktop at the HTTPS endpoint:
+
+```json
+{
+  "mcpServers": {
+    "brainless-mcp": {
+      "url": "https://localhost:8443/mcp"
     }
   }
 }
