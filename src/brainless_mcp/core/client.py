@@ -71,9 +71,9 @@ class _QueryCache:
 class UnraidClient:
     """Singleton async GraphQL client for the Unraid API."""
 
-    _instance: "UnraidClient | None" = None
+    _instance: UnraidClient | None = None
 
-    def __new__(cls) -> "UnraidClient":
+    def __new__(cls) -> UnraidClient:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance._initialised = False
@@ -147,7 +147,9 @@ class UnraidClient:
         except httpx.TimeoutException as exc:
             raise UnraidError(f"Request timed out: {exc}") from exc
         except httpx.ConnectError as exc:
-            raise UnraidError(f"Cannot connect to Unraid at {self._settings.unraid_api_url}: {exc}") from exc
+            raise UnraidError(
+                f"Cannot connect to Unraid at {self._settings.unraid_api_url}: {exc}"
+            ) from exc
 
         if resp.status_code == 401:
             raise UnraidAuthError("Unraid API rejected the API key (HTTP 401).")
@@ -176,12 +178,16 @@ class UnraidClient:
             self._cache.set(cache_key, data)
         return data
 
-    async def query(self, gql: str, variables: dict[str, Any] | None = None, cache: bool = True) -> dict[str, Any]:
+    async def query(
+        self, gql: str, variables: dict[str, Any] | None = None, cache: bool = True
+    ) -> dict[str, Any]:
         """Execute a read-only query, optionally cached."""
         key = f"{gql[:80]}:{variables}" if cache else None
         return await self.execute(gql, variables, cache_key=key)
 
-    async def mutate(self, gql: str, variables: dict[str, Any] | None = None, invalidate_prefix: str = "") -> dict[str, Any]:
+    async def mutate(
+        self, gql: str, variables: dict[str, Any] | None = None, invalidate_prefix: str = ""
+    ) -> dict[str, Any]:
         """Execute a mutation, invalidating relevant cache entries."""
         result = await self.execute(gql, variables)
         if invalidate_prefix:

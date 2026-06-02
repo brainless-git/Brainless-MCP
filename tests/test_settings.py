@@ -1,6 +1,5 @@
 """Tests for the settings / configuration module."""
 
-import pytest
 from brainless_mcp.config.settings import Settings
 
 

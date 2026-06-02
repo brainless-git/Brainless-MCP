@@ -1,6 +1,7 @@
 """Shared fixtures for Brainless MCP tests."""
 
 import os
+
 import pytest
 
 # Ensure env is set before importing settings (which caches on import)
