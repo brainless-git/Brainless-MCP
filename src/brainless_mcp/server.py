@@ -3,12 +3,9 @@
 from __future__ import annotations
 
 import logging
-import time
-from collections import deque
-from typing import Any, Callable
+from typing import Any
 
 from fastmcp import FastMCP
-from fastmcp.exceptions import ToolError
 
 from .config import get_settings
 from .tools import register_tools
@@ -55,6 +52,7 @@ def create_server() -> FastMCP:
 
     if settings.unraid_auto_start_subscriptions:
         import asyncio
+
         from .tools._live import _SUBS, _active, _buffers, _run_subscription
 
         @mcp.on_startup

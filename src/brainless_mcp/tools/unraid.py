@@ -89,7 +89,8 @@ def register_tools(mcp: FastMCP) -> None:
         description=(
             "Full-control tool for managing an Unraid server. "
             "Use action + subaction to target a specific domain and operation.\n\n"
-            "Actions: system, health, docker, vm, array, notification, user, plugin, setting, live\n\n"
+            "Actions: system, health, docker, vm, array, notification, user, plugin, setting, live"
+            "\n\n"
             "Examples:\n"
             "  action='docker' subaction='list'\n"
             "  action='vm' subaction='start' params={'name': 'Windows10'}\n"
@@ -98,7 +99,8 @@ def register_tools(mcp: FastMCP) -> None:
             "  action='docker' subaction='remove' params={'id': 'abc123'} confirm=True\n"
             "  action='live' subaction='start' params={'name': 'cpu'}\n"
             "  action='health' subaction='ping'\n\n"
-            "Pass confirm=True for destructive operations (stop array, remove containers/VMs, etc.)."
+            "Pass confirm=True for destructive operations "
+            "(stop array, remove containers/VMs, etc.)."
         ),
     )
     async def unraid(

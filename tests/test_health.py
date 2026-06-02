@@ -1,6 +1,7 @@
 """Tests for the health tool handler."""
 
 import pytest
+
 from brainless_mcp.tools._health import handle
 
 

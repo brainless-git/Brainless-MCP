@@ -1,6 +1,7 @@
 """Tests for the array tool handler."""
 
 import pytest
+
 from brainless_mcp.tools._array import handle
 
 

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 from functools import lru_cache
 from pathlib import Path
 
@@ -35,6 +34,18 @@ class Settings(BaseSettings):
     # Transport
     brainless_mcp_transport: str = "stdio"
     brainless_mcp_port: int = 8000
+
+    # TLS / HTTPS (HTTP and SSE transports only)
+    brainless_mcp_ssl_certfile: str = ""
+    brainless_mcp_ssl_keyfile: str = ""
+
+    # Let's Encrypt via Cloudflare DNS-01 (all four required to activate)
+    brainless_mcp_acme_email: str = ""
+    brainless_mcp_acme_domain: str = ""
+    cloudflare_api_token: str = ""
+    brainless_mcp_acme_cert_dir: str = ""   # default: ~/.brainless-mcp/certs
+    brainless_mcp_acme_staging: bool = False
+    brainless_mcp_acme_dns_wait: int = 30   # seconds to wait for DNS propagation
 
     # Logging
     brainless_mcp_log_level: str = "INFO"

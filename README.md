@@ -76,6 +76,14 @@ All options are set via environment variables or a `.env` file (copy `.env.examp
 | `BRAINLESS_MCP_BEARER_TOKEN` | *(empty)* | Token MCP clients must present — leave empty to disable auth |
 | `BRAINLESS_MCP_TRANSPORT` | `stdio` | `stdio` \| `http` \| `sse` |
 | `BRAINLESS_MCP_PORT` | `8000` | HTTP listen port (non-stdio transports only) |
+| `BRAINLESS_MCP_SSL_CERTFILE` | *(empty)* | Path to TLS certificate file — enables HTTPS when set with keyfile |
+| `BRAINLESS_MCP_SSL_KEYFILE` | *(empty)* | Path to TLS private key file — must be set together with certfile |
+| `BRAINLESS_MCP_ACME_EMAIL` | *(empty)* | Let's Encrypt account email — activates auto cert management when set with domain + CF token |
+| `BRAINLESS_MCP_ACME_DOMAIN` | *(empty)* | Domain to issue the cert for (e.g. `mcp.example.com` or `*.example.com`) |
+| `CLOUDFLARE_API_TOKEN` | *(empty)* | Cloudflare API token with **Zone → DNS → Edit** permission |
+| `BRAINLESS_MCP_ACME_CERT_DIR` | `~/.brainless-mcp/certs` | Directory to store account key, domain key, and certificate |
+| `BRAINLESS_MCP_ACME_STAGING` | `false` | Use Let's Encrypt staging (rate-limit-free, untrusted cert) |
+| `BRAINLESS_MCP_ACME_DNS_WAIT` | `30` | Seconds to wait for DNS propagation before answering the challenge |
 | `BRAINLESS_MCP_LOG_LEVEL` | `INFO` | `DEBUG` \| `INFO` \| `WARNING` \| `ERROR` |
 | `BRAINLESS_MCP_LOG_FILE` | *(empty)* | Log file path — logs to stderr if empty |
 | `UNRAID_AUTO_START_SUBSCRIPTIONS` | `false` | Auto-start all 10 live WebSocket subscriptions on startup |
@@ -90,6 +98,86 @@ All options are set via environment variables or a `.env` file (copy `.env.examp
   "mcpServers": {
     "brainless-mcp": {
       "url": "http://localhost:8000/mcp"
+    }
+  }
+}
+```
+
+### Using the Docker image (HTTPS — Let's Encrypt via Cloudflare DNS-01)
+
+The server automatically obtains and renews a certificate on startup when the three
+ACME variables are set. The cert is stored in `BRAINLESS_MCP_ACME_CERT_DIR` and
+reused on subsequent starts (renewed automatically when fewer than 30 days remain).
+
+```bash
+docker run -d \
+  --name brainless-mcp \
+  --restart unless-stopped \
+  -p 8443:8443 \
+  -v brainless-mcp-certs:/certs \
+  -e UNRAID_API_URL=https://tower.local \
+  -e UNRAID_API_KEY=your_api_key \
+  -e UNRAID_VERIFY_SSL=false \
+  -e BRAINLESS_MCP_TRANSPORT=http \
+  -e BRAINLESS_MCP_PORT=8443 \
+  -e BRAINLESS_MCP_ACME_EMAIL=you@example.com \
+  -e BRAINLESS_MCP_ACME_DOMAIN=mcp.example.com \
+  -e CLOUDFLARE_API_TOKEN=your_cf_token \
+  -e BRAINLESS_MCP_ACME_CERT_DIR=/certs \
+  brainless86/brainless-mcp:latest
+```
+
+Claude Desktop config:
+
+```json
+{
+  "mcpServers": {
+    "brainless-mcp": {
+      "url": "https://mcp.example.com:8443/mcp"
+    }
+  }
+}
+```
+
+> **Cloudflare API token** — create one at dash.cloudflare.com → My Profile → API Tokens
+> with **Zone → DNS → Edit** permission scoped to the relevant zone.
+
+> **First run** — the server may take 60–90 s to start while it completes the ACME
+> challenge. Set `BRAINLESS_MCP_ACME_STAGING=true` to test without hitting rate limits.
+
+> **From source** — install the `tls` extra first: `uv sync --extra tls`
+
+### Using the Docker image (HTTPS with self-signed cert)
+
+Generate a cert once, then mount it into the container:
+
+```bash
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes \
+  -subj '/CN=brainless-mcp'
+
+docker run -d \
+  --name brainless-mcp \
+  --restart unless-stopped \
+  -p 8443:8443 \
+  -v /path/to/cert.pem:/certs/cert.pem:ro \
+  -v /path/to/key.pem:/certs/key.pem:ro \
+  -e UNRAID_API_URL=https://tower.local \
+  -e UNRAID_API_KEY=your_api_key \
+  -e UNRAID_VERIFY_SSL=false \
+  -e BRAINLESS_MCP_TRANSPORT=http \
+  -e BRAINLESS_MCP_PORT=8443 \
+  -e BRAINLESS_MCP_SSL_CERTFILE=/certs/cert.pem \
+  -e BRAINLESS_MCP_SSL_KEYFILE=/certs/key.pem \
+  brainless86/brainless-mcp:latest
+```
+
+Then point Claude Desktop at the HTTPS endpoint:
+
+```json
+{
+  "mcpServers": {
+    "brainless-mcp": {
+      "url": "https://localhost:8443/mcp"
     }
   }
 }

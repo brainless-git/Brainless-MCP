@@ -1,6 +1,7 @@
 """Tests for the live subscription handler (no real WebSocket needed)."""
 
 import pytest
+
 from brainless_mcp.tools import _live
 
 

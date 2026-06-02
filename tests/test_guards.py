@@ -1,8 +1,9 @@
 """Tests for the destructive-action safety guards."""
 
 import pytest
-from brainless_mcp.core.guards import require_confirm, DESTRUCTIVE_ACTIONS
+
 from brainless_mcp.core.exceptions import ConfirmationRequired
+from brainless_mcp.core.guards import DESTRUCTIVE_ACTIONS, require_confirm
 
 
 def test_safe_action_passes_without_confirm():
