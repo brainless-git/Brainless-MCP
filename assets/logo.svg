@@ -1,37 +1,77 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" width="720" height="220">
 
-  <!-- Motion lines (speed blur to the left of ghost) -->
-  <line x1="12"  y1="88"  x2="66" y2="88"  stroke="#e22828" stroke-width="3.5" stroke-linecap="round" opacity="0.25"/>
-  <line x1="8"   y1="104" x2="62" y2="104" stroke="#e22828" stroke-width="3.5" stroke-linecap="round" opacity="0.45"/>
-  <line x1="12"  y1="120" x2="66" y2="120" stroke="#e22828" stroke-width="3.5" stroke-linecap="round" opacity="0.70"/>
-
-  <!-- Ghost body: domed head → straight sides → 4-bump wavy skirt -->
+  <!-- Flames: outer tongues (red) -->
   <path d="
-    M 72,108
-    A 48,64 0 0,1 168,108
-    L 168,163
-    Q 156,188 144,163
-    Q 132,188 120,163
-    Q 108,188  96,163
-    Q  84,188  72,163
-    Z
-  " fill="#e22828"/>
+    M 120,70
+    C 104,58 110,44 104,30
+    C 100,20 108,12 106,2
+    C 118,12 114,24 122,32
+    C 128,20 122,12 128,4
+    C 140,16 134,30 140,40
+    C 146,30 142,24 148,18
+    C 156,30 150,46 142,56
+    C 136,64 128,70 120,70
+    Z" fill="#e22828"/>
+  <path d="
+    M 94,72 C 84,64 88,52 82,44
+    C 78,38 84,32 82,26
+    C 92,34 90,46 96,54
+    C 100,62 100,68 94,72 Z" fill="#e22828" opacity="0.85"/>
+  <path d="
+    M 148,70 C 158,62 154,52 160,44
+    C 164,38 158,32 160,26
+    C 150,34 152,44 146,52
+    C 142,60 142,66 148,70 Z" fill="#e22828" opacity="0.85"/>
 
-  <!-- Left eye -->
-  <ellipse cx="103" cy="91"  rx="12"  ry="14.5" fill="white"/>
-  <ellipse cx="106" cy="95"  rx="6"   ry="7.5"  fill="#1c1c1c"/>
-  <circle  cx="101" cy="86"  r="3.5"            fill="white"/>
+  <!-- Flames: inner glow (orange/yellow) -->
+  <path d="
+    M 120,68
+    C 110,58 116,46 112,34
+    C 110,26 116,20 114,12
+    C 124,22 118,34 126,42
+    C 130,34 126,28 130,22
+    C 138,34 134,48 128,58
+    C 124,64 122,68 120,68
+    Z" fill="#ff7a18"/>
+  <path d="
+    M 120,66 C 114,58 120,50 118,42
+    C 126,50 122,58 124,52
+    C 128,58 126,64 120,66 Z" fill="#ffc224"/>
 
-  <!-- Right eye -->
-  <ellipse cx="137" cy="91"  rx="12"  ry="14.5" fill="white"/>
-  <ellipse cx="140" cy="95"  rx="6"   ry="7.5"  fill="#1c1c1c"/>
-  <circle  cx="135" cy="86"  r="3.5"            fill="white"/>
+  <!-- Skull: cranium + cheeks + jaw -->
+  <path d="
+    M 120,58
+    C 90,58 72,80 72,106
+    C 72,122 79,133 88,138
+    L 88,154
+    C 88,161 93,166 100,166
+    L 140,166
+    C 147,166 152,161 152,154
+    L 152,138
+    C 161,133 168,122 168,106
+    C 168,80 150,58 120,58
+    Z" fill="#e8e8e8"/>
 
-  <!-- Smile -->
-  <path d="M 108,118 Q 120,134 132,118"
-        stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Eye sockets -->
+  <ellipse cx="101" cy="108" rx="12" ry="13" fill="#1c1c1c"/>
+  <ellipse cx="139" cy="108" rx="12" ry="13" fill="#1c1c1c"/>
+  <!-- Flame glints in the sockets -->
+  <circle cx="104" cy="105" r="3.5" fill="#e22828"/>
+  <circle cx="142" cy="105" r="3.5" fill="#e22828"/>
 
-  <!-- Small MCP plug icon under ghost — three dots hinting at API nodes -->
+  <!-- Nasal cavity -->
+  <path d="M 120,122 L 113,136 Q 120,141 127,136 Z" fill="#1c1c1c"/>
+
+  <!-- Teeth separators -->
+  <line x1="104" y1="150" x2="104" y2="165" stroke="#1c1c1c" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="112" y1="150" x2="112" y2="166" stroke="#1c1c1c" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="120" y1="150" x2="120" y2="166" stroke="#1c1c1c" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="128" y1="150" x2="128" y2="166" stroke="#1c1c1c" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="136" y1="150" x2="136" y2="165" stroke="#1c1c1c" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Tooth line -->
+  <line x1="92" y1="150" x2="148" y2="150" stroke="#1c1c1c" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Small MCP plug icon under skull — three dots hinting at API nodes -->
   <circle cx="105" cy="200" r="3" fill="#e22828" opacity="0.55"/>
   <circle cx="120" cy="200" r="3" fill="#e22828" opacity="0.55"/>
   <circle cx="135" cy="200" r="3" fill="#e22828" opacity="0.55"/>
